@@ -1,0 +1,10 @@
+{
+  "name": "FORGE",
+  "short_name": "FORGE",
+  "description": "AI App Builder powered by Claude Opus 4.6",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#f97316",
+  "icons": []
+}
