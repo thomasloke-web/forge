@@ -1,10 +1,27 @@
 import Link from "next/link"
-import { auth } from "@clerk/nextjs/server"
-import { UserButton } from "@clerk/nextjs"
 import { Flame } from "lucide-react"
 
+async function getUserId(): Promise<string | null> {
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || !process.env.CLERK_SECRET_KEY) return null
+  try {
+    const { auth } = await import("@clerk/nextjs/server")
+    const { userId } = await auth()
+    return userId ?? null
+  } catch {
+    return null
+  }
+}
+
 export default async function Nav() {
-  const { userId } = await auth()
+  const userId = await getUserId()
+  const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  let UserButtonCmp: React.ComponentType | null = null
+  if (hasClerk && userId) {
+    try {
+      const mod = await import("@clerk/nextjs")
+      UserButtonCmp = mod.UserButton
+    } catch {}
+  }
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto max-w-6xl px-5 h-16 flex items-center justify-between">
@@ -23,7 +40,7 @@ export default async function Nav() {
           {userId ? (
             <>
               <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-white">Dashboard</Link>
-              <UserButton />
+              {UserButtonCmp ? <UserButtonCmp /> : null}
             </>
           ) : (
             <>

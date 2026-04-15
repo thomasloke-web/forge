@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Nav from "@/components/nav"
 import Footer from "@/components/footer"
+import CookieBanner from "@/components/cookie-banner"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -16,18 +17,19 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ClerkProvider>
-      <html lang="en" className="h-full antialiased">
-        <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
-          <Nav />
-          <main id="main" className="flex-1">{children}</main>
-          <Footer />
-          <Toaster position="top-center" theme="dark" />
-          <Analytics />
-          <SpeedInsights />
-        </body>
-      </html>
-    </ClerkProvider>
+  const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  const tree = (
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
+        <Nav />
+        <main id="main" className="flex-1">{children}</main>
+        <CookieBanner />
+        <Footer />
+        <Toaster position="top-center" theme="dark" />
+        <Analytics />
+        <SpeedInsights />
+      </body>
+    </html>
   )
+  return hasClerk ? <ClerkProvider>{tree}</ClerkProvider> : tree
 }

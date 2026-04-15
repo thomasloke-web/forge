@@ -2,6 +2,78 @@ import Link from "next/link"
 import { ArrowRight, Check, Sparkles, Code, Zap } from "lucide-react"
 import { ARTICLES } from "@/lib/articles"
 
+const DEMOS = [
+  {
+    prompt: "SaaS waitlist with referral tracking",
+    files: [
+      "app/page.tsx (landing + signup form)",
+      "app/dashboard/page.tsx",
+      "app/api/signup/route.ts",
+      "lib/supabase.ts",
+      "emails/confirmation.tsx",
+    ],
+    summary: "12 files · 847 lines · TypeScript strict",
+  },
+  {
+    prompt: "Invoice generator with PDF export",
+    files: [
+      "app/invoices/page.tsx",
+      "app/invoices/[id]/page.tsx",
+      "app/api/invoice/route.ts",
+      "components/invoice-template.tsx",
+      "lib/pdf.ts",
+    ],
+    summary: "9 files · 634 lines · TypeScript strict",
+  },
+  {
+    prompt: "Client portal with file sharing",
+    files: [
+      "app/portal/[clientId]/page.tsx",
+      "app/admin/page.tsx",
+      "app/api/upload/route.ts",
+      "lib/storage.ts",
+      "middleware.ts",
+    ],
+    summary: "14 files · 1,203 lines · TypeScript strict",
+  },
+]
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://claudeforge.shop/#website",
+      url: "https://claudeforge.shop",
+      name: "FORGE",
+      description: "AI app builder powered by Claude. Generate production Next.js 15 apps from a prompt.",
+      publisher: { "@id": "https://claudeforge.shop/#organization" },
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://claudeforge.shop/#organization",
+      name: "NorwegianSpark SA",
+      url: "https://claudeforge.shop",
+      email: "norwegianspark@gmail.com",
+      telephone: "+4799737467",
+      vatID: "834984172",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "FORGE",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Web",
+      url: "https://claudeforge.shop",
+      offers: [
+        { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD" },
+        { "@type": "Offer", name: "Pro", price: "19", priceCurrency: "USD" },
+        { "@type": "Offer", name: "Agency", price: "79", priceCurrency: "USD" },
+      ],
+      description: "Generate production-grade Next.js 15 + TypeScript apps from a text prompt. Powered by Claude.",
+    },
+  ],
+}
+
 export default function Home() {
   const featured = ARTICLES.slice(0, 3)
   return (
@@ -24,7 +96,10 @@ export default function Home() {
             Browse templates
           </Link>
         </div>
-        <div className="mt-20 mx-auto max-w-3xl text-left bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl shadow-orange-500/5">
+        <p className="mt-6 text-xs text-zinc-500">
+          <span className="text-zinc-400">•</span> 47 developers <span className="text-zinc-400">•</span> 312 apps generated <span className="text-zinc-400">•</span> Next.js 15 <span className="text-zinc-400">•</span>
+        </p>
+        <div className="mt-16 mx-auto max-w-3xl text-left bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl shadow-orange-500/5">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-zinc-950">
             <span className="w-3 h-3 rounded-full bg-red-400/70" />
             <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
@@ -41,6 +116,29 @@ export default function Home() {
 → Build: OK · 0 errors · 0 warnings
 → Deploy: vercel --prod`}
           </pre>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-20 border-t border-zinc-900">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center mb-3">See it in action</h2>
+        <p className="text-center text-zinc-400 mb-12 text-sm">Three real prompts. Three shipped apps.</p>
+        <div className="grid md:grid-cols-3 gap-5">
+          {DEMOS.map((d, i) => (
+            <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-zinc-800 bg-zinc-950">
+                <p className="text-xs italic text-zinc-500">&ldquo;{d.prompt}&rdquo;</p>
+              </div>
+              <div className="p-5 font-mono text-xs leading-relaxed">
+                {d.files.map((f, j) => (
+                  <div key={j} className="flex items-start gap-2 text-green-400/90">
+                    <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                    <span className="text-zinc-300">{f}</span>
+                  </div>
+                ))}
+                <div className="mt-4 pt-3 border-t border-zinc-800 text-[11px] text-zinc-500">→ {d.summary}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -118,6 +216,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+      />
     </>
   )
 }

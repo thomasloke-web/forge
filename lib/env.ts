@@ -21,8 +21,7 @@ export type Env = z.infer<typeof schema>
 function validateEnv(): Env {
   const parsed = schema.safeParse(process.env)
   if (!parsed.success) {
-    console.warn("Env validation failed:", parsed.error.flatten().fieldErrors)
-    return process.env as unknown as Env
+    throw new Error(`Env validation failed: ${JSON.stringify(parsed.error.flatten().fieldErrors)}`)
   }
   return parsed.data
 }
