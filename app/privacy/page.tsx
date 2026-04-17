@@ -1,3 +1,4 @@
+export const revalidate = 86400
 export const metadata = { title: "Privacy", robots: { index: false } }
 
 export default function PrivacyPage() {

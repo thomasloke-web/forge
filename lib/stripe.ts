@@ -5,6 +5,6 @@ export function getStripe() {
 }
 
 export const PRICES = {
-  pro: { id: process.env.STRIPE_PRO_PRICE_ID || "", amount: 19, name: "Pro" },
-  agency: { id: process.env.STRIPE_AGENCY_PRICE_ID || "", amount: 79, name: "Agency" },
+  pro: { id: process.env.STRIPE_PRO_PRICE_ID || "", amount: 29, name: "Pro" },
+  agency: { id: process.env.STRIPE_AGENCY_PRICE_ID || "", amount: 99, name: "Agency" },
 }

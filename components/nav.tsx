@@ -33,8 +33,9 @@ export default async function Nav() {
           <Link href="/generate" className="hover:text-white">Generate</Link>
           <Link href="/templates" className="hover:text-white">Templates</Link>
           <Link href="/pricing" className="hover:text-white">Pricing</Link>
-          <Link href="/journal" className="hover:text-white">Journal</Link>
-          <Link href="/about" className="hover:text-white">About</Link>
+          <Link href="/blog" className="hover:text-white">Blog</Link>
+          <Link href="/tutorials" className="hover:text-white">Tutorials</Link>
+          {!userId && <Link href="/demo" className="hover:text-white">Demo</Link>}
         </nav>
         <div className="flex items-center gap-3">
           {userId ? (

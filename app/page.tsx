@@ -1,3 +1,5 @@
+export const revalidate = 3600
+
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles, Code, Zap } from "lucide-react"
 import { ARTICLES } from "@/lib/articles"

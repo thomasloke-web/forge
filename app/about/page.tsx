@@ -1,3 +1,4 @@
+export const revalidate = 86400
 export const metadata = { title: "About" }
 
 export default function AboutPage() {

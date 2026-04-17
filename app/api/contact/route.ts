@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { rateLimit, getIp } from "@/lib/rate-limit"
+import * as Sentry from "@sentry/nextjs"
 
 export const runtime = "nodejs"
 
@@ -12,7 +13,7 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   const ip = getIp(req)
-  if (!rateLimit(`contact:${ip}`, 5, 3600_000)) {
+  if (!await rateLimit(`contact:${ip}`, 5, 3600_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 })
   }
   const body = await req.json().catch(() => null)
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid input" }, { status: 400 })
   const { name, email, message } = parsed.data
 
+  const fromEmail = process.env.RESEND_FROM_EMAIL || "thomas@claudeforge.shop"
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     console.warn("Contact submission (no Resend key):", { name, email })
@@ -27,27 +29,18 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        from: "FORGE <contact@claudeforge.shop>",
-        to: ["norwegianspark@gmail.com"],
-        reply_to: email,
-        subject: `FORGE contact: ${name}`,
-        text: `From: ${name} <${email}>\n\n${message}`,
-      }),
+    const { Resend } = await import("resend")
+    const resend = new Resend(apiKey)
+    await resend.emails.send({
+      from: `FORGE <${fromEmail}>`,
+      to: ["norwegianspark@gmail.com"],
+      replyTo: email,
+      subject: `FORGE contact: ${name}`,
+      text: `From: ${name} <${email}>\n\n${message}`,
     })
-    if (!res.ok) {
-      const err = await res.text().catch(() => "")
-      console.error("Resend error", res.status, err)
-      return NextResponse.json({ error: "Failed to send" }, { status: 502 })
-    }
     return NextResponse.json({ ok: true })
   } catch (err) {
+    Sentry.captureException(err)
     console.error("contact error", err)
     return NextResponse.json({ error: "Failed to send" }, { status: 500 })
   }

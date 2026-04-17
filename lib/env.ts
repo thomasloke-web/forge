@@ -13,7 +13,13 @@ const schema = z.object({
   STRIPE_PRO_PRICE_ID: z.string().min(1),
   STRIPE_AGENCY_PRICE_ID: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
+  RESEND_FROM_EMAIL: z.string().email(),
   NEXT_PUBLIC_APP_URL: z.string().url(),
+  MONTHLY_ANTHROPIC_BUDGET_USD: z.string().optional(),
+  SENTRY_DSN: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().min(1),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
 })
 
 export type Env = z.infer<typeof schema>
